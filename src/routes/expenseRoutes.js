@@ -38,6 +38,16 @@ router.get(
 );
 
 /**
+ * @route   GET /api/expenses/group/:groupId
+ * @desc    Get expenses by group with pagination
+ * @access  Private
+ */
+router.get(
+    '/group/:groupId',
+    expenseController.getExpensesByGroup
+);
+
+/**
  * @route   GET /api/expenses/:id
  * @desc    Get expense by ID
  * @access  Private

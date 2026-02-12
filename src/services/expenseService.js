@@ -246,6 +246,64 @@ class ExpenseService {
             return settlementPlan;
         }
     }
+
+    /**
+     * Get expenses by group with pagination
+     * @param {string} groupId - ID of the group
+     * @param {string} userId - ID of the requesting user
+     * @param {Object} options - Pagination options
+     * @returns {Promise<Object>} Paginated expenses
+     */
+    async getExpensesByGroup(groupId, userId, options = {}) {
+        const Group = require('../models/Group');
+
+        // Verify group exists and user is a member
+        const group = await Group.findOne({
+            _id: groupId,
+            isDeleted: false,
+        });
+
+        if (!group) {
+            throw new Error('Group not found');
+        }
+
+        if (!group.isMember(userId)) {
+            throw new Error('You are not a member of this group');
+        }
+
+        // Pagination
+        const page = parseInt(options.page) || 1;
+        const limit = parseInt(options.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        // Get expenses for the group
+        const expenses = await Expense.find({
+            groupId,
+            isDeleted: false,
+        })
+            .populate('paidBy', 'name email')
+            .populate('participants', 'name email')
+            .populate('splitDetails.userId', 'name email')
+            .sort({ date: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        // Get total count
+        const total = await Expense.countDocuments({
+            groupId,
+            isDeleted: false,
+        });
+
+        return {
+            expenses,
+            pagination: {
+                page,
+                limit,
+                total,
+                pages: Math.ceil(total / limit),
+            },
+        };
+    }
 }
 
 module.exports = new ExpenseService();

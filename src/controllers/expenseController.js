@@ -110,6 +110,30 @@ class ExpenseController {
             next(error);
         }
     }
+
+    /**
+     * Get expenses by group with pagination
+     */
+    async getExpensesByGroup(req, res, next) {
+        try {
+            const { groupId } = req.params;
+            const { page, limit } = req.query;
+
+            const result = await expenseService.getExpensesByGroup(
+                groupId,
+                req.user.userId,
+                { page, limit }
+            );
+
+            res.status(200).json({
+                success: true,
+                data: result.expenses,
+                pagination: result.pagination,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = new ExpenseController();
