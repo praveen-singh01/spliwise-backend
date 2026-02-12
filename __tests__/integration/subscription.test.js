@@ -1,9 +1,9 @@
 const request = require('supertest');
-const app = require('../src/server');
-const { connectTestDB, closeTestDB, clearTestDB } = require('./utils/testDb');
-const User = require('../src/models/User');
-const Subscription = require('../src/models/Subscription');
-const WebhookEvent = require('../src/models/WebhookEvent');
+const app = require('../../src/server');
+const { connectTestDB, closeTestDB, clearTestDB } = require('../utils/testDb');
+const User = require('../../src/models/User');
+const Subscription = require('../../src/models/Subscription');
+const WebhookEvent = require('../../src/models/WebhookEvent');
 const crypto = require('crypto');
 
 describe('Subscription API', () => {
