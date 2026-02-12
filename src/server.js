@@ -1,11 +1,14 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const connectDB = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middlewares/errorHandler');
+const { initializeSocket } = require('./socket');
 
 const app = express();
+const server = http.createServer(app);
 
 // Connect to database only if not in test environment
 if (process.env.NODE_ENV !== 'test') {
@@ -43,10 +46,15 @@ app.use((req, res) => {
 // Error handler (must be last)
 app.use(errorHandler);
 
+// Initialize Socket.IO (only if not in test environment)
+if (process.env.NODE_ENV !== 'test') {
+    initializeSocket(server);
+}
+
 // Start server only if not in test environment
 if (process.env.NODE_ENV !== 'test') {
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`🚀 Server running on port ${PORT}`);
         console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
     });

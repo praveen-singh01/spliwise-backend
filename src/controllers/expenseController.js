@@ -1,4 +1,5 @@
 const expenseService = require('../services/expenseService');
+const { emitExpenseCreated, emitBalanceUpdated } = require('../socket/events');
 
 class ExpenseController {
     /**
@@ -8,6 +9,11 @@ class ExpenseController {
     async createExpense(req, res, next) {
         try {
             const expense = await expenseService.createExpense(req.body);
+
+            // Emit real-time event if expense belongs to a group
+            if (expense.groupId) {
+                emitExpenseCreated(expense.groupId, expense, req.user.userId);
+            }
 
             res.status(201).json({
                 success: true,
@@ -66,6 +72,11 @@ class ExpenseController {
                 req.body
             );
 
+            // Emit real-time event if expense belongs to a group
+            if (expense.groupId) {
+                emitBalanceUpdated(expense.groupId, 'Expense updated');
+            }
+
             res.status(200).json({
                 success: true,
                 message: 'Expense updated successfully',
@@ -82,7 +93,16 @@ class ExpenseController {
      */
     async deleteExpense(req, res, next) {
         try {
+            // Get expense before deleting to check groupId
+            const expense = await expenseService.getExpenseById(req.params.id);
+            const groupId = expense.groupId;
+
             const result = await expenseService.deleteExpense(req.params.id);
+
+            // Emit real-time event if expense belonged to a group
+            if (groupId) {
+                emitBalanceUpdated(groupId, 'Expense deleted');
+            }
 
             res.status(200).json({
                 success: true,

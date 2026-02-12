@@ -1,4 +1,6 @@
 const groupService = require('../services/groupService');
+const { getIO } = require('../socket/events');
+const { getUserSockets, joinGroupRoom } = require('../socket/rooms');
 
 /**
  * Create a new group
@@ -96,6 +98,18 @@ const addMember = async (req, res, next) => {
             req.user.userId,
             req.body.userId
         );
+
+        // Add new member's socket to group room if they're connected
+        try {
+            const io = getIO();
+            const userSockets = getUserSockets(io, req.body.userId);
+            userSockets.forEach((socket) => {
+                joinGroupRoom(socket, req.params.id);
+            });
+        } catch (error) {
+            // Socket not initialized or user not connected, ignore
+            console.log('Socket room join skipped:', error.message);
+        }
 
         res.status(200).json({
             success: true,
