@@ -1,58 +1,83 @@
-const authService = require('../services/authService');
+const User = require('../models/User');
 
-class AuthController {
-    /**
-     * Signup new user
-     * POST /api/auth/signup
-     */
-    async signup(req, res, next) {
-        try {
-            const result = await authService.signup(req.body);
-
-            res.status(201).json({
-                success: true,
-                message: 'User registered successfully',
-                data: result,
-            });
-        } catch (error) {
-            next(error);
-        }
+/**
+ * Get all users (for participant selection)
+ */
+const getUsers = async (req, res, next) => {
+    try {
+        const users = await User.find().select('name email');
+        res.status(200).json({
+            success: true,
+            count: users.length,
+            data: users,
+        });
+    } catch (error) {
+        next(error);
     }
+};
 
-    /**
-     * Login user
-     * POST /api/auth/login
-     */
-    async login(req, res, next) {
-        try {
-            const result = await authService.login(req.body);
-
-            res.status(200).json({
-                success: true,
-                message: 'Login successful',
-                data: result,
+/**
+ * Get current user profile
+ */
+const getProfile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.userId).select('-password');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
             });
-        } catch (error) {
-            next(error);
         }
+        res.status(200).json({
+            success: true,
+            data: user,
+        });
+    } catch (error) {
+        next(error);
     }
+};
 
-    /**
-     * Get current user profile
-     * GET /api/auth/me
-     */
-    async getProfile(req, res, next) {
-        try {
-            const user = await authService.getUserById(req.user.userId);
+/**
+ * Signup user
+ */
+const signup = async (req, res, next) => {
+    try {
+        const authService = require('../services/authService');
+        const { name, email, password } = req.body;
 
-            res.status(200).json({
-                success: true,
-                data: user,
-            });
-        } catch (error) {
-            next(error);
-        }
+        const result = await authService.signup(name, email, password);
+
+        res.status(201).json({
+            success: true,
+            data: result,
+        });
+    } catch (error) {
+        next(error);
     }
-}
+};
 
-module.exports = new AuthController();
+/**
+ * Login user
+ */
+const login = async (req, res, next) => {
+    try {
+        const authService = require('../services/authService');
+        const { email, password } = req.body;
+
+        const result = await authService.login(email, password);
+
+        res.status(200).json({
+            success: true,
+            data: result,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = {
+    signup,
+    login,
+    getProfile,
+    getUsers,
+};

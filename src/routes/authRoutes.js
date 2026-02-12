@@ -14,7 +14,7 @@ const router = express.Router();
 router.post(
     '/signup',
     validate(signupSchema),
-    authController.signup.bind(authController)
+    authController.signup
 );
 
 /**
@@ -25,7 +25,7 @@ router.post(
 router.post(
     '/login',
     validate(loginSchema),
-    authController.login.bind(authController)
+    authController.login
 );
 
 /**
@@ -36,7 +36,18 @@ router.post(
 router.get(
     '/me',
     authenticate,
-    authController.getProfile.bind(authController)
+    authController.getProfile
+);
+
+/**
+ * @route   GET /api/auth/users
+ * @desc    Get all users (for participant selection)
+ * @access  Private
+ */
+router.get(
+    '/users',
+    authenticate,
+    authController.getUsers
 );
 
 module.exports = router;
