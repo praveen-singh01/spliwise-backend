@@ -27,11 +27,26 @@ const userSchema = new mongoose.Schema(
             minlength: [6, 'Password must be at least 6 characters'],
             select: false, // Don't return password by default
         },
+        subscriptionId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Subscription',
+        },
+        currentPlan: {
+            type: String,
+            enum: ['free', 'premium', 'enterprise'],
+            default: 'free',
+        },
     },
     {
         timestamps: true,
     }
 );
+
+// Virtual for subscription status
+userSchema.virtual('subscriptionStatus').get(function () {
+    if (!this.subscriptionId) return 'free';
+    return this.subscriptionId.status || 'unknown';
+});
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
