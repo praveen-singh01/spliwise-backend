@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', require('./routes/expenseRoutes'));
 app.use('/api/balances', require('./routes/balanceRoutes'));
+app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -50,4 +51,5 @@ if (process.env.NODE_ENV !== 'test') {
     });
 }
 
+// Export app for testing
 module.exports = app;
