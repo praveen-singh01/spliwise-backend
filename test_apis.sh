@@ -39,7 +39,7 @@ LOGIN_RESPONSE=$(curl -s -X POST $BASE_URL/api/auth/login \
   -d '{"email":"testuser@example.com","password":"password123"}')
 
 TOKEN=$(echo $LOGIN_RESPONSE | python3 -c "import sys, json; print(json.load(sys.stdin).get('data', {}).get('token', ''))" 2>/dev/null)
-USER_ID=$(echo $LOGIN_RESPONSE | python3 -c "import sys, json; print(json.load(sys.stdin).get('data', {}).get('user', {}).get('_id', ''))" 2>/dev/null)
+USER_ID=$(echo $LOGIN_RESPONSE | python3 -c "import sys, json; print(json.load(sys.stdin).get('data', {}).get('user', {}).get('id', ''))" 2>/dev/null)
 
 if [ -n "$TOKEN" ]; then
     print_result 0 "Login successful, token received"
