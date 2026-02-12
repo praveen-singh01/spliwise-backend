@@ -93,11 +93,11 @@ const getExpensesQuerySchema = z.object({
         .optional(),
     startDate: z
         .string()
-        .datetime()
+        .regex(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/, 'Invalid date format')
         .optional(),
     endDate: z
         .string()
-        .datetime()
+        .regex(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/, 'Invalid date format')
         .optional(),
 });
 
