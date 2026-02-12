@@ -6,25 +6,28 @@ const expenseSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Description is required'],
             trim: true,
-            minlength: [3, 'Description must be at least 3 characters'],
             maxlength: [200, 'Description cannot exceed 200 characters'],
         },
         amount: {
             type: Number,
             required: [true, 'Amount is required'],
             min: [0.01, 'Amount must be greater than 0'],
-            validate: {
-                validator: function (value) {
-                    // Ensure amount has at most 2 decimal places
-                    return /^\d+(\.\d{1,2})?$/.test(value.toString());
-                },
-                message: 'Amount can have at most 2 decimal places',
-            },
         },
         paidBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
-            required: [true, 'Payer is required'],
+            required: [true, 'Paid by user is required'],
+            index: true,
+        },
+        groupId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Group',
+            index: true,
+        },
+        category: {
+            type: String,
+            trim: true,
+            maxlength: [50, 'Category cannot exceed 50 characters'],
         },
         participants: {
             type: [
