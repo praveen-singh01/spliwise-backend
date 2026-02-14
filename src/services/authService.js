@@ -58,6 +58,8 @@ class AuthService {
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                subscription: user.subscription,
+                currentPlan: user.currentPlan,
             },
             token,
         };
@@ -94,6 +96,8 @@ class AuthService {
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                subscription: user.subscription,
+                currentPlan: user.currentPlan,
             },
             token,
         };

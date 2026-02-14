@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+.env
+.env.local
+.git
+.gitignore
+README.md
+__tests__
+*.test.js
+coverage
+.vscode
+.idea
+*.md
+seed.js
+update_user_premium.js
+fix_user_subscription.js

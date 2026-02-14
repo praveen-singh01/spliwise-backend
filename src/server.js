@@ -21,11 +21,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/expenses', require('./routes/expenseRoutes'));
-app.use('/api/balances', require('./routes/balanceRoutes'));
-app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
-app.use('/api/groups', require('./routes/groupRoutes'));
+app.use('/api/health', require('./routes/health'));
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/expenses', require('./routes/expenses'));
+app.use('/api/balances', require('./routes/balances'));
+app.use('/api/subscriptions', require('./routes/subscription'));
+app.use('/api/groups', require('./routes/groups'));
 
 // Health check
 app.get('/health', (req, res) => {
@@ -51,9 +52,9 @@ if (process.env.NODE_ENV !== 'test') {
     initializeSocket(server);
 }
 
-// Start server only if not in test environment
+// Start server
+const PORT = process.env.PORT || 5007;
 if (process.env.NODE_ENV !== 'test') {
-    const PORT = process.env.PORT || 5000;
     server.listen(PORT, () => {
         console.log(`🚀 Server running on port ${PORT}`);
         console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
