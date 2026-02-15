@@ -234,7 +234,9 @@ class ExpenseService {
             }
             : {};
 
-        const expenses = await Expense.find(query);
+        const expenses = await Expense.find(query)
+            .populate('paidBy', 'name email')
+            .populate('splitDetails.userId', 'name email');
 
         if (userId) {
             // Get settlements for specific user
