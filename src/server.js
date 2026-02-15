@@ -22,11 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/health', require('./routes/health'));
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/expenses', require('./routes/expenses'));
-app.use('/api/balances', require('./routes/balances'));
-app.use('/api/subscriptions', require('./routes/subscription'));
-app.use('/api/groups', require('./routes/groups'));
+app.use('/api/auth', authRoutes);
+app.use('/api/expenses', require('./routes/expenseRoutes'));
+app.use('/api/balances', require('./routes/balanceRoutes'));
+app.use('/api/subscriptions', require('./routes/subscriptionRoutes'));
+app.use('/api/groups', require('./routes/groupRoutes'));
 
 // Health check
 app.get('/health', (req, res) => {
